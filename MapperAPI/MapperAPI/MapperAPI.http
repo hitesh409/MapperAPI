@@ -1,0 +1,6 @@
+@MapperAPI_HostAddress = http://localhost:5186
+
+GET {{MapperAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
