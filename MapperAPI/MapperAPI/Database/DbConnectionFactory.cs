@@ -2,12 +2,11 @@
 using DotNetEnv;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Xml.Linq;
 
 
 namespace MapperAPI.Database
 {
-    public class DbConnectionFactory:IDbConnectionFactory
+    public class DbConnectionFactory : IDbConnectionFactory
     {
         private readonly string? _connetionString;
 
@@ -41,6 +40,15 @@ namespace MapperAPI.Database
             return table;
         }
 
+        /// <summary>
+        /// Fetches a list of strongly-typed objects from the database.
+        /// </summary>
+        public async Task<IEnumerable<T>> ExecuteQuery<T>(string sql, object? parameters = null)
+        {
+            using var connection = CreateConnection();
+            return await connection.QueryAsync<T>(sql, parameters);
+        }
+
 
         /// <summary>
         /// Executes an inline SQL query that returns a single scalar value.
@@ -54,13 +62,10 @@ namespace MapperAPI.Database
         /// <summary>
         /// Executes a stored procedure. Can return either a DataTable or scalar depending on query.
         /// </summary>
-        public async Task<DataTable> ExecuteStoreProcedureAsync(string storeProcedure,object? parameters = null)
+        public async Task<IEnumerable<T>> ExecuteStoreProcedureAsync<T>(string storeProcedure,object? parameters = null)
         {
-            using var con = CreateConnection();
-            using var reader = await con.ExecuteReaderAsync(storeProcedure, parameters, commandType: CommandType.StoredProcedure);
-            var table = new DataTable();
-            table.Load(reader);
-            return table;
+            using var connection = CreateConnection();
+            return await connection.QueryAsync<T>(storeProcedure, parameters, commandType: CommandType.StoredProcedure);
         }
 
         /// <summary>
@@ -71,5 +76,7 @@ namespace MapperAPI.Database
             using var con = CreateConnection();
             return await con.ExecuteAsync(sql, parameters, commandType:CommandType.Text);
         }
+
+        
     }
 }
