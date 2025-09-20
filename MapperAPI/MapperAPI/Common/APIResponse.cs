@@ -2,9 +2,9 @@
 {
     public class APIResponse<T>
     {
-        public T? data { get; set; }
+        public T? Data { get; set; }
         public bool IsSuccess { get; set; }
-        public string? errorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
        
     }
 }
