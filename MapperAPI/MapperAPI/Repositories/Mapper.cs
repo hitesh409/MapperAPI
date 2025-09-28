@@ -20,5 +20,9 @@ namespace MapperAPI.Repositories
             string sql = "select * from mapping where isMapped = 1 and isDeleted = 0 and (@str = '' or title like '%'+@str+'%')";
             return await _dbFactory.ExecuteQuery<MapperModel>(sql, new {str = searchStr}); 
         }
+        public async Task<int> UpdateMappingStatus(string unmappedIds, string mappedIds, string userId)
+        {
+            return await _dbFactory.ExecuteNonQueryAsync("USP_SaveMapping", new {unmappedIds, mappedIds, userId});
+        }
     }
 }

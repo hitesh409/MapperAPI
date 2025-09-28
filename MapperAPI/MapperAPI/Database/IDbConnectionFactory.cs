@@ -10,6 +10,7 @@ namespace MapperAPI.Database
         Task<T?> GetValueFromTableAsync<T>(string sql, object? parameters = null);
         Task<IEnumerable<T>> ExecuteStoreProcedureAsync<T>(string storeProcedure, object? parameters = null);
         Task<int> UpdateDataTableAsync(string sql, object? parameters = null);
+        Task<int> ExecuteNonQueryAsync(string storedProcedure, object? parametes = null);
 
     }
 }

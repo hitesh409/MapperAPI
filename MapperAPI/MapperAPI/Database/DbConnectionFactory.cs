@@ -27,19 +27,6 @@ namespace MapperAPI.Database
             return new SqlConnection(_connetionString);
         }
 
-
-        /// <summary>
-        /// Executes an inline SQL query and returns results in a DataTable.
-        /// </summary>
-        public async Task<DataTable> GetDataTableAsync(string sql, object? parameters = null)
-        {
-            using var connection = CreateConnection();
-            using var reader = await connection.ExecuteReaderAsync(sql, parameters,commandType:CommandType.Text);
-            var table = new DataTable();
-            table.Load(reader);
-            return table;
-        }
-
         /// <summary>
         /// Fetches a list of strongly-typed objects from the database.
         /// </summary>
@@ -62,10 +49,10 @@ namespace MapperAPI.Database
         /// <summary>
         /// Executes a stored procedure. Can return either a DataTable or scalar depending on query.
         /// </summary>
-        public async Task<IEnumerable<T>> ExecuteStoreProcedureAsync<T>(string storeProcedure,object? parameters = null)
+        public async Task<IEnumerable<T>> ExecuteStoreProcedureAsync<T>(string storedProcedure,object? parameters = null)
         {
             using var connection = CreateConnection();
-            return await connection.QueryAsync<T>(storeProcedure, parameters, commandType: CommandType.StoredProcedure);
+            return await connection.QueryAsync<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
         }
 
         /// <summary>
@@ -75,6 +62,15 @@ namespace MapperAPI.Database
         {
             using var con = CreateConnection();
             return await con.ExecuteAsync(sql, parameters, commandType:CommandType.Text);
+        }
+
+        /// <summary>
+        /// Executes a stored procedure that returns a single scalar value. (Insert, Update, Delete operations)
+        /// </summary>
+        public async Task<int> ExecuteNonQueryAsync(string storedProcedure, object? parametes = null)
+        {
+            using var con = CreateConnection();
+            return await con.ExecuteAsync(storedProcedure,parametes, commandType:CommandType.StoredProcedure);
         }
 
         
